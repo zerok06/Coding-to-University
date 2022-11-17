@@ -13,6 +13,9 @@ struct node
 // Config
 typedef node *Node;
 
+void printNode(Node nodo){
+	cout << "Nombre: "<< nodo->firstName<<" Genero: "<< nodo->genere<<endl;
+}
 Node createNode(string firstName, string lastName, char genere){
     Node newNode = new(struct node);
     newNode->firstName = firstName;
@@ -30,7 +33,7 @@ void addNode(Node &init, Node newNode){
     }
     else
     {
-        while(currentNode != NULL){
+        while(currentNode->next != NULL){
         	currentNode = currentNode->next;
 		}
 		currentNode->next = newNode;
@@ -38,27 +41,27 @@ void addNode(Node &init, Node newNode){
 }
 int lenghtList(Node init){
 	int len = 0;
-	Node currentNode =init;
-	while(currentNode != NULL){
+	Node currentNode = init;
+	while(currentNode->next != NULL){
 		currentNode = currentNode->next;
 		len++;
 	}
-	return len;
+	return len + 1;
 }
-void searchNodeByPosition(Node init, int position){
+Node searchNodeByPosition(Node init, int position,bool isNode){
 	Node currentNode = init;
 	int i = 0;
 	if(position > lenghtList(init)){
 		cout << "La posicion no existe!"<<endl;
-	}else{
-		while(currentNode != NULL){
+	}else{	
+		while(currentNode->next != NULL){
 			if(i == position){
 				break;
 			}
 			currentNode = currentNode->next;
 			i++;
 		}
-		cout << "Nombre: "<< currentNode->firstName<<" Genero: "<< currentNode->genere<<endl;
+			return currentNode;
 	}
 	
 }
@@ -66,18 +69,18 @@ void searchNodeByPosition(Node init, int position){
 void centerNodeByPosition(Node init){
 	int len = lenghtList(init);
 	if(len % 2 == 0){
-		searchNodeByPosition(init, len / 2);
-		searchNodeByPosition(init, (len / 2) + 1);
+		printNode(searchNodeByPosition(init, len / 2, false));
+		printNode(searchNodeByPosition(init, (len / 2) + 1, false));
 	}
 	if(len % 2 != 0){
-		searchNodeByPosition(init, int((len / 2) + 0.5));
+		printNode(searchNodeByPosition(init, int((len / 2) + 0.5),false));
 	}
 }
 
 void deleteNodeByPosition(Node &init, int position){
 	Node currentNode = init;
 	int i = 0;
-	while(currentNode != NULL){
+	while(currentNode->next != NULL){
 		if(i == position){
 			break;
 		}
@@ -85,7 +88,6 @@ void deleteNodeByPosition(Node &init, int position){
 	}
 	Node currentDelete = currentNode->next;
 	currentNode->next = currentNode->next->next;
-	delete(currentDelete);
 }
 
 void printList(Node init){
@@ -96,6 +98,17 @@ void printList(Node init){
     	currentNode = currentNode->next;
     	i++;
 	}
+}
+Node reverse(Node init){
+	
+	Node newInit = searchNodeByPosition(init, 0, false);
+	Node currentInit= newInit;
+	int len = lenghtList(init);
+	for(int i = 1; i < len;i ++){
+		currentInit->next = searchNodeByPosition(init, len - i, false);
+		currentInit = currentInit->next;
+	}
+	return newInit;
 }
 
 int main(){
@@ -138,7 +151,7 @@ int main(){
 				int position;
 				cout << "Ingrese la posicion a buscar: ";
 				cin >> position;
-				searchNodeByPosition(init, position);
+				printNode(searchNodeByPosition(init, position, false));
 				break;
 			}
 			case 4:{
@@ -150,7 +163,12 @@ int main(){
 				break;
     		}
     		case 6:{
-    			cout << "Pronto"<<endl;
+    			init = reverse(init);
+				break;
+			}
+			//TEST
+			case 7:{
+				cout << lenghtList(init)<<endl;
 				break;
 			}
 			default:{
