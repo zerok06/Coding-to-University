@@ -80,7 +80,6 @@ class LinkedList{
 		int length(){
 			return len;
 		}
-		
 };
 
 int main(){
